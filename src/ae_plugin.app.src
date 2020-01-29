@@ -1,0 +1,18 @@
+%% -*- mode:erlang; erlang-indent-level: 4; indent-tabs-mode: nil -*-
+{application, ae_plugin,
+ [{description, "An OTP application"},
+  {vsn, "0.1.0"},
+  {registered, []},
+  {mod, {ae_plugin_app, []}},
+  {applications,
+   [kernel,
+    stdlib,
+    setup
+   ]},
+  {env,[]},
+  {modules, []},
+
+  {maintainers, []},
+  {licenses, ["Apache 2.0"]},
+  {links, []}
+ ]}.
