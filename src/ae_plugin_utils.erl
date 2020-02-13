@@ -15,7 +15,7 @@ start_aecore() ->
             NodeRoot = binary_to_list(NodeRoot_),
             ErlLibs = filelib:wildcard(filename:join(NodeRoot, "lib/*/ebin")),
             AERoot = filename:join(NodeRoot, "rel/aeternity"),
-            code:add_pathsa(ErlLibs),
+            code:add_pathsz(ErlLibs),
             start_aecore(AERoot);
         _ ->
             {error, {not_set, "AE_ROOT"}}
