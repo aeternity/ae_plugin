@@ -8,10 +8,18 @@
         , load_aecore/0 ]).
 
 start_aecore() ->
-    start_aecore(os:getenv("AE_ROOT")).
-
-start_aecore(false) ->
-    {error, {not_set, "AE_ROOT"}};
+    case {os:getenv("AE_ROOT"), application:get_env(ae_plugin, node_root)} of
+        {[_|_] = AERoot, _} ->
+            start_aecore(AERoot);
+        {false, {ok, <<NodeRoot_/binary>>}} ->
+            NodeRoot = binary_to_list(NodeRoot_),
+            ErlLibs = filelib:wildcard(filename:join(NodeRoot, "lib/*/ebin")),
+            AERoot = filename:join(NodeRoot, "rel/aeternity"),
+            code:add_pathsz(ErlLibs),
+            start_aecore(AERoot);
+        _ ->
+            {error, {not_set, "AE_ROOT"}}
+    end.
 start_aecore(AERoot) ->
     application:set_env(mnesia, dir, filename:join(AERoot, "data/mnesia")),
     io:fwrite("Loading aecore and deps~n", []),
