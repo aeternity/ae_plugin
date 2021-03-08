@@ -7,6 +7,9 @@
 -export([ start_aecore/0
         , load_aecore/0 ]).
 
+-define(VERSION_FILE, <<"VERSION">>).
+-define(REVISION_FILE, <<"REVISION">>).
+
 start_aecore() ->
     case {os:getenv("AE_ROOT"), application:get_env(ae_plugin, node_root)} of
         {[_|_] = AERoot, _} ->
@@ -37,6 +40,7 @@ start_aecore(AERoot) ->
 fix_environment(AERoot) ->
     maybe_fix_setup_dirs(AERoot),
     fix_lager_paths(AERoot),
+    ensure_version_files_linked(AERoot),
     ok.
 
 maybe_fix_setup_dirs(AERoot) ->
@@ -88,6 +92,12 @@ xform_(T, F) when is_tuple(T) ->
     list_to_tuple(xform(tuple_to_list(T), F));
 xform_(X, _) ->
     X.
+
+ensure_version_files_linked(AERoot) ->
+    VersionFile = filename:join(AERoot, ?VERSION_FILE),
+    file:make_symlink(VersionFile, ?VERSION_FILE),
+    RevisionFile = filename:join(AERoot, ?REVISION_FILE),
+    file:make_symlink(RevisionFile, ?REVISION_FILE).
 
 load_aecore() ->
     {ok, []} = setup:reload_app(aecore),
