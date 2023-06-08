@@ -16,9 +16,9 @@ start_aecore() ->
             start_aecore(AERoot);
         {false, {ok, <<NodeRoot_/binary>>}} ->
             NodeRoot = binary_to_list(NodeRoot_),
-            ErlLib = filelib:wildcard(filename:join(NodeRoot, "lib/*/ebin")),
-            ok     = code:add_pathsz(ErlLib),
             AERoot = filename:join(NodeRoot, "rel/aeternity"),
+            ErlLib = filelib:wildcard(filename:join(AERoot, "lib/*/ebin")),
+            ok     = code:add_pathsz(ErlLib),
             [SCfg] = filelib:wildcard(filename:join(AERoot, "releases/*/sys.config")),
             {ok, [AppEnvs]} = file:consult(SCfg),
             [[application:set_env(App, K, V) || {K, V} <- AppEnv] || {App, AppEnv} <- AppEnvs],
